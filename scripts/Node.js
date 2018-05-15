@@ -1,8 +1,7 @@
 export default class Node {
-  constructor(data) {
+  constructor(data = null) {
     this.data = data;
     this.children = {};
     this.complete = null;
-    // this.weigth
   }
 }

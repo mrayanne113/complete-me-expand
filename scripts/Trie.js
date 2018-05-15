@@ -38,9 +38,9 @@ export default class Trie {
       return this.suggestions;
     }
 
-    for (let i = 0; i < lettersArr.length; i++) {
-      currentNode = currentNode.children[letters[i]];
-    }
+    lettersArr.forEach(letter => {
+      currentNode = currentNode.children[letter];
+    });
 
     this.findWords(currentNode);
     return this.suggestions;
@@ -56,7 +56,6 @@ export default class Trie {
       this.findWords(currentNode.children[child]);
     });
   }
-
 
   populate(array) {
     array.forEach(word => {
