@@ -17,7 +17,7 @@ describe('Trie', () => {
   
     assert.deepEqual(trie.root, new Node());
     assert.equal(trie.counter, 0);
-    assert.deepEqual(trie.suggest, []);
+    assert.deepEqual(trie.suggestions, []);
   });
 
   describe('Insert', () => {
@@ -51,9 +51,14 @@ describe('Trie', () => {
       trie.insert('world');
     });
 
-    it('should do something', () => {
-      trie.suggest('w');
+    it('should return a empty array if the word isnt there', () => {
+      trie.suggest('a');
+      assert.deepEqual(trie.suggestions, [])
+    });
 
+    it('should return a empty array if the word isnt there', () => {
+      trie.suggest('wo');
+      assert.deepEqual(trie.suggestions, ['word', 'words', 'world']);
     });
   });
 

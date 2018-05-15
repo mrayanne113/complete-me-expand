@@ -4,7 +4,7 @@ export default class Trie {
   constructor() {
     this.root = new Node();
     this.counter = 0;
-    this.suggest = [];
+    this.suggestions = [];
   }
 
   count() {
@@ -29,15 +29,34 @@ export default class Trie {
   }
 
   suggest(letters) {
-    let letterArray = [...letters.toLowerCase()];
+    this.suggestions = [];
     let currentNode = this.root;
+    let lettersArr = [...letters.toLowerCase()];
+    let rootKeys = Object.keys(this.root.children);
 
-    letterArray.forEach(letter => {
-      if (currentNode.children.data === letter) {
-        console.log('hi')
+    if (!rootKeys.includes(letters[0])) {
+      return this.suggestions;
+    }
+
+    for (let i = 0; i < lettersArr.length; i++) {
+      currentNode = currentNode.children[letters[i]];
+    }
+
+    this.findWords(currentNode);
+    return this.suggestions;
+  }
+
+  findWords(currentNode) {
+    let childrenNodes = Object.keys(currentNode.children);
+
+    childrenNodes.forEach((child) => {
+      if (currentNode.children[child].complete) {
+        this.suggestions.push(currentNode.children[child].complete);
       }
+      this.findWords(currentNode.children[child]);
     });
   }
+
 
   populate(array) {
     array.forEach(word => {
