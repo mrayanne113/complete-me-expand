@@ -6,6 +6,7 @@ const fs = require('fs');
 const text = "/usr/share/dict/words";
 const dictionary = fs.readFileSync(text).toString().trim().split('\n');
 
+
 describe('Trie', () => {
   let trie;
 
@@ -53,7 +54,7 @@ describe('Trie', () => {
 
     it('should return a empty array if the word isnt there', () => {
       trie.suggest('a');
-      assert.deepEqual(trie.suggestions, [])
+      assert.deepEqual(trie.suggestions, []);
     });
 
     it('should return a empty array if the word isnt there', () => {
@@ -73,16 +74,46 @@ describe('Trie', () => {
 
     it('should insert an large array', () => {
       trie.populate(dictionary);
-
+    
       assert.equal(trie.counter, 234371);
+    });
+
+    it('should suggest() words from the dictionary', () => {
+      trie.populate(dictionary);
+
+      assert.deepEqual(trie.suggest('zapa'), ['zapara',  'zaparan', 'zaparo', 'zaparoan', 'zapas', 'zapatero']);
+    });
+  });
+
+  
+  describe('Optimize', () => {
+    beforeEach(() => {
+      trie.insert('cake');
+      trie.insert('cherry');
+      trie.insert('caketopper');
+      trie.insert('dog');
+      trie.insert('doug');
+      
+    });
+
+    it('should reduce nodes together if possible', () => {
+      trie.optimize();
+      // console.log(JSON.stringify(trie, null, 4));
+
+      assert.equal(trie.root.children.c.children.a.data, 'ake');
     });
   });
 
   describe('Expand', () => {
+    it('should split nodes that have been optimized back into single letter nodes', () => {
+      trie.populate(['cake', 'caketopper', 'cherry', 'chi']);
+      trie.optimize();
+      assert.deepEqual(trie.root.children.c.children.a.data, 'ake');
 
-  });
-
-  describe('Optimize', () => {
-
+      trie.expand();
+      console.log(JSON.stringify(trie, null, 4));      
+    
+      assert.deepEqual(trie.root.children.c.children.a.data, 'a');
+    });
   });
 });

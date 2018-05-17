@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import Node from '../scripts/Node.js';
 
-describe.only('Node', () => {
+describe('Node', () => {
   let node;
 
   beforeEach(() => {
