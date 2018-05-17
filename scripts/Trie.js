@@ -49,7 +49,7 @@ export default class Trie {
   findWords(currentNode) {
     let childrenNodes = Object.keys(currentNode.children);
 
-    childrenNodes.forEach((child) => {
+    childrenNodes.forEach(child => {
       if (currentNode.children[child].complete) {
         this.suggestions.push(currentNode.children[child].complete);
       }
@@ -63,11 +63,40 @@ export default class Trie {
     });
   }
 
-  expand() {
+  optimize() {
+    let currentNode = this.root;
 
+    this.optimizeHelper(currentNode);
   }
 
-  optimize() {
+  optimizeHelper(currentNode) {
+    const childrenKeys = Object.keys(currentNode.children);
 
+    childrenKeys.forEach(child => {
+      let node = currentNode.children[child];
+
+      while (Object.keys(node.children).length <= 1) {
+        const nextChildKey = Object.keys(node.children);
+
+        if (Object.keys(node.children).length !== 0 && !node.complete) {
+          node.data += nextChildKey.join('');
+          node.complete = node.children[nextChildKey].complete;
+          node.children = node.children[nextChildKey].children;
+          delete node.children[child];
+        } else {
+          return this.optimizeHelper(node);
+        }
+      }
+      return this.optimizeHelper(node);
+    });
+  }
+
+  expand() {
+    let currentNode = this.root;
+
+    this.findWords(currentNode);
+    this.counter = 0;
+    this.root = new Node();
+    this.populate(this.suggestions);
   }
 }
